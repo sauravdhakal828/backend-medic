@@ -1,11 +1,9 @@
+require("dotenv").config(); // MUST BE FIRST
+
 const express = require("express");
 const cors = require("cors");
-const dotenv = require("dotenv");
 const session = require("express-session");
 const passport = require("./config/passport");
-
-dotenv.config();
-
 const authRoutes = require("./routes/authRoutes");
 const prescriptionRoutes = require("./routes/prescriptionRoutes");
 
