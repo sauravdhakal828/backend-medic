@@ -12,6 +12,7 @@ model User {
   email              String               @unique
   password           String?
   name               String?
+  pharmacyName       String?
   role               String               @default("CONSUMER")
   googleId           String?              @unique
   avatar             String?
