@@ -28,5 +28,15 @@ app.use("/api/prescriptions", prescriptionRoutes);
 
 app.get("/", (req, res) => res.json({ message: "PharmaChain API running" }));
 
+app.get("/debug", (req, res) => {
+  res.json({
+    hasGoogleClientId: !!process.env.GOOGLE_CLIENT_ID,
+    hasGoogleClientSecret: !!process.env.GOOGLE_CLIENT_SECRET,
+    callbackUrl: process.env.GOOGLE_CALLBACK_URL,
+    clientUrl: process.env.CLIENT_URL,
+    nodeEnv: process.env.NODE_ENV,
+  });
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
