@@ -1,0 +1,52 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                 Int                  @id @default(autoincrement())
+  email              String               @unique
+  password           String?
+  name               String?
+  role               String               @default("CONSUMER")
+  googleId           String?              @unique
+  avatar             String?
+  isProfileComplete  Boolean              @default(false)
+  prescriptions      Prescription[]
+  savedPrescriptions SavedPrescription[]
+  createdAt          DateTime             @default(now())
+}
+
+model Prescription {
+  id                String              @id @default(uuid())
+  uid               String              @unique @default(uuid())
+  medicineName      String
+  dosage            String
+  frequency         Int
+  times             String
+  instructions      String?
+  patientName       String
+  qrCode            String?
+  solanaTxSignature String?
+  solanaDataHash    String?
+  pharmacyId        Int
+  pharmacy          User                @relation(fields: [pharmacyId], references: [id])
+  savedBy           SavedPrescription[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+}
+
+model SavedPrescription {
+  id              Int          @id @default(autoincrement())
+  consumerId      Int
+  prescriptionUid String
+  consumer        User         @relation(fields: [consumerId], references: [id])
+  prescription    Prescription @relation(fields: [prescriptionUid], references: [uid])
+  savedAt         DateTime     @default(now())
+
+  @@unique([consumerId, prescriptionUid])
+}
