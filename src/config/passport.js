@@ -1,11 +1,12 @@
 const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
 // Only setup Google strategy if credentials exist
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+  const GoogleStrategy = require("passport-google-oauth20").Strategy;
+  
   passport.use(
     new GoogleStrategy(
       {
@@ -47,14 +48,19 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
       }
     )
   );
+  console.log("✅ Google OAuth initialized");
 } else {
-  console.warn("⚠️ Google OAuth credentials not found - Google login disabled");
+  console.warn("⚠️ GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET missing");
 }
 
 passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser(async (id, done) => {
-  const user = await prisma.user.findUnique({ where: { id } });
-  done(null, user);
+  try {
+    const user = await prisma.user.findUnique({ where: { id } });
+    done(null, user);
+  } catch (err) {
+    done(err, null);
+  }
 });
 
 module.exports = passport;

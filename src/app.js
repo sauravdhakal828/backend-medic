@@ -39,4 +39,11 @@ app.get("/debug", (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
+  console.log("Google Client ID loaded:", !!process.env.GOOGLE_CLIENT_ID);
+  console.log("Google Secret loaded:", !!process.env.GOOGLE_CLIENT_SECRET);
+  console.log("Callback URL:", process.env.GOOGLE_CALLBACK_URL);
+}).on("error", (err) => {
+  console.error("Server failed to start:", err);
+});
